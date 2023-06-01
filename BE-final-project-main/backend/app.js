@@ -11,6 +11,8 @@ const path = module.require('path');
 
 // const upload = multer({ dest: imagesPath });
 
+const port=process.env.PORT || 8001;
+
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS,GET,POST,PUT,PATCH,DELETE');
@@ -38,4 +40,4 @@ app.use((err, req, res, next) => {
 })
 
 mongoose.connect('mongodb+srv://dhruvjain6467:beproject@cluster0.bcqxztg.mongodb.net/portal_farmer?retryWrites=true&w=majority').
-    then(resData => { app.listen(8001); console.log('mongoose is connected') }).catch(err => { console.log(err) })
+    then(resData => { app.listen(port); console.log('mongoose is connected') }).catch(err => { console.log(err) })
