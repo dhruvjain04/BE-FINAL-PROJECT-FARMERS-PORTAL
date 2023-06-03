@@ -159,9 +159,11 @@ function getWeatherimg(weatherCode) {
 
 const Weather=()=>
 {
+
   const [weather_hourly,setweather_hourly]=useState({});
   const [weather_current,setweather_current]=useState({});
   const [weather_daily,setweather_daily]=useState({});
+  const [place,setplace]=useState('pune');
 
   const getweekday=(dateString)=>
   {
@@ -170,13 +172,21 @@ const Weather=()=>
     return dayOfWeek;
   }
 
+  function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      setplace(event.target.value);
+    }
+  }
+
   useEffect(()=>
   {
     const fetchweather_current=async ()=>
     {
+      
   
       try{
-        const API_URL = 'https://ai-weather-by-meteosource.p.rapidapi.com/current?place_id=pune&timezone=auto&language=en&units=auto';
+        const API_URL = `https://ai-weather-by-meteosource.p.rapidapi.com/current?place_id=${place}&timezone=auto&language=en&units=auto`;
         const response=await axios.get(API_URL,
           {
             headers: {
@@ -193,9 +203,9 @@ const Weather=()=>
     };
     const fetchweather_hourly=async ()=>
     {
-     
+      
       try{
-        const API_URL = 'https://ai-weather-by-meteosource.p.rapidapi.com/hourly?place_id=pune&timezone=auto&language=en&units=auto';
+        const API_URL = `https://ai-weather-by-meteosource.p.rapidapi.com/hourly?place_id=${place}&timezone=auto&language=en&units=auto`;
         const response=await axios.get(API_URL,
           {
             headers: {
@@ -212,9 +222,9 @@ const Weather=()=>
     }
     const fetchweather_daily=async ()=>
     {
-     
+      
       try{
-        const API_URL = 'https://ai-weather-by-meteosource.p.rapidapi.com/daily?place_id=pune&timezone=auto&language=en&units=auto';
+        const API_URL = `https://ai-weather-by-meteosource.p.rapidapi.com/daily?place_id=${place}&timezone=auto&language=en&units=auto`;
         const response=await axios.get(API_URL,
           {
             headers: {
@@ -229,10 +239,11 @@ const Weather=()=>
      console.log(error);
       }
     }
+    
     fetchweather_hourly();
     fetchweather_current();
     fetchweather_daily();
-  },[])
+  },[place])
   const hourly_arr=weather_hourly?.hourly?.data;
   const daily_arr=weather_daily?.daily?.data;
   const temp=weather_current?.current?.temperature;
@@ -241,15 +252,23 @@ const Weather=()=>
   const pressure=weather_current?.current?.pressure;
   const summary=weather_current?.current?.summary;
   console.log(pressure,Humidity,weather_img);
+ 
   return(
   <div>
-          
+
   <section style={{ backgroundColor: "#C1CFEA",height:"575px" }}>
     <MDBContainer className="h-100">
       <MDBRow
         className="justify-content-center align-items-center h-100 d-flex"
         style={{ color: "#282828" }}
       >
+          <input
+                className="form-control rounded"
+                type="text"
+                placeholder="Search City"
+                onKeyPress={handleKeyPress}
+                style={{width:"500px"}}
+    />
         <MDBCard
           className="mb-4 gradient-custom"
           style={{ borderRadius: "25px" }}
@@ -258,7 +277,7 @@ const Weather=()=>
           <MDBCardBody className="p-4">
                 <div className="d-flex justify-content-between pb-2" style={{marginLeft:'105px'}}>
                   <div>
-                    <p className="h2 mb-1">Pune</p>
+                    <p className="h2 mb-1">{place.toUpperCase()}</p>
                     {summary && (
   <p className="mb-1 text-muted mb-0">{summary}</p>
 )}                 {temp && 
@@ -271,7 +290,7 @@ const Weather=()=>
 )}
                     <span className="mx-2">|</span>
                     {Humidity && (
-  <span className="text-muted mb-0">Hummidity:{Humidity}%</span>
+  <span className="text-muted mb-0">Humidity:{Humidity}%</span>
 )}
                     
                     
@@ -347,7 +366,7 @@ export default function Home() {
   {
     const fetchnews=async ()=>
     {
-      const response=await axios.get('http://localhost:8001/farmer/scrape')
+      const response=await axios.get('https://backend-portal.onrender.com/farmer/scrape')
       setobject(response.data);
     }
     fetchnews();
